@@ -87,7 +87,7 @@ def evaluate_summary(machine_summary, user_summary, eval_metric='avg'):
     prec_arr = []
     rec_arr = []
 
-    for user_idx in xrange(n_users):
+    for user_idx in range(n_users):
         gt_summary = user_summary[user_idx,:]
         overlap_duration = (machine_summary * gt_summary).sum()
         precision = overlap_duration / (machine_summary.sum() + 1e-8)
