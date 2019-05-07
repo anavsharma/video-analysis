@@ -174,35 +174,35 @@ def evaluate(model, dataset, test_keys, use_gpu):
             if use_gpu: seq = seq.cuda()
             probs = model(seq)
             probs = probs.data.cpu().squeeze().numpy()
-
+            print(probs)
             cps = dataset[key]['change_points'][...]
             num_frames = dataset[key]['n_frames'][()]
             nfps = dataset[key]['n_frame_per_seg'][...].tolist()
             positions = dataset[key]['picks'][...]
-            user_summary = dataset[key]['user_summary'][...]
+            # user_summary = dataset[key]['user_summary'][...]
 
             machine_summary = vsum_tools.generate_summary(probs, cps, num_frames, nfps, positions)
-            fm, _, _ = vsum_tools.evaluate_summary(machine_summary, user_summary, eval_metric)
-            fms.append(fm)
+            # fm, _, _ = vsum_tools.evaluate_summary(machine_summary, user_summary, eval_metric)
+            # fms.append(fm)
 
-            if args.verbose:
-                table.append([key_idx+1, key, "{:.1%}".format(fm)])
+            # if args.verbose:
+            #     table.append([key_idx+1, key, "{:.1%}".format(fm)])
 
             if args.save_results:
                 h5_res.create_dataset(key + '/score', data=probs)
                 h5_res.create_dataset(key + '/machine_summary', data=machine_summary)
-                h5_res.create_dataset(key + '/gtscore', data=dataset[key]['gtscore'][...])
-                h5_res.create_dataset(key + '/fm', data=fm)
+                # h5_res.create_dataset(key + '/gtscore', data=dataset[key]['gtscore'][...])
+                # h5_res.create_dataset(key + '/fm', data=fm)
 
     if args.verbose:
         print(tabulate(table))
 
     if args.save_results: h5_res.close()
 
-    mean_fm = np.mean(fms)
-    print("Average F-score {:.1%}".format(mean_fm))
+    # mean_fm = np.mean(fms)
+    # print("Average F-score {:.1%}".format(mean_fm))
 
-    return mean_fm
+    return 0.5
 
 if __name__ == '__main__':
     main()

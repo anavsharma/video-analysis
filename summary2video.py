@@ -7,19 +7,20 @@ import argparse
 import sys
 import json
 
-json_file = open('./log/video_map.json')
-video_dict = json.load(json_file)
-
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--path', type=str, required=True, help="path to h5 result file")
 parser.add_argument('-d', '--frm-dir', type=str, required=True, help="path to frame directory")
 parser.add_argument('-i', '--idx', type=int, default=0, help="which key to choose")
-parser.add_argument('--fps', type=int, default=30, help="frames per second")
+parser.add_argument('--fps', type=int, default=10, help="frames per second")
 parser.add_argument('--width', type=int, default=640, help="frame width")
 parser.add_argument('--height', type=int, default=480, help="frame height")
 parser.add_argument('--save-dir', type=str, default='log', help="directory to save")
 parser.add_argument('--save-name', type=str, default='summary.avi', help="video name to save (ends with .avi)")
 args = parser.parse_args()
+
+json_filepath = osp.join('./json_data', args.save_name[:-4],'video_map.json') 
+json_file = open(json_filepath)
+video_dict = json.load(json_file)
 
 def frm2video(frm_dir, dir_name, summary, vid_writer):
     for idx, val in enumerate(summary):
@@ -27,7 +28,14 @@ def frm2video(frm_dir, dir_name, summary, vid_writer):
             # here frame name starts with '000001.jpg'
             # change according to your need
             frm_name = str(idx+1).zfill(6) + '.jpg'
+            # print(frm_name)
+            # print(dir_name)
+            # print(frm_dir)
             frm_path = osp.join(frm_dir,dir_name,frm_name)
+            print(frm_path)
+            # if not os.path.exists(frm_path):
+            #     continue
+            # print(frm_path)
             frm = cv2.imread(frm_path)
             frm = cv2.resize(frm, (args.width, args.height))
             vid_writer.write(frm)
